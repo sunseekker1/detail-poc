@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <meta name="description" content="The Webdev Playground">
+    <meta name="author" content="Noel Bellón">
+
+    <title>DETAIL AG JavaScript POC</title>
+    <!-- CSS -->
+    <link href="frameworks/bootstrap-3.3.6-dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+
+    <!-- JavaScripts -->
+    <script src="frameworks/jquery/jquery-2.2.1.min.js"></script>
+    <!--[if lt IE 9]>
+    <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+</head>
+
+<body>
+
+
+
+<script type="text/javascript">
+
+    var viewModel = {};
+
+    $(document).ready(function() {
+
+        $.ajaxSetup ({
+            // Disable caching of AJAX responses
+            cache: false
+        });
+
+        var lang = 'de';
+
+        /*Set Mock Data*/
+        viewModel.countries = [];
+
+
+        // Map the Json Data to the ViewModelData
+        for (var i = 0; i < countries.length; i++) {
+            viewModel.countries.push({
+                "countryID": countries[i]["id"],
+                "countryName": countries[i]["country_name"],
+                "countryCode": countries[i]["country_code"]});
+        }
+
+
+        viewModel.labels = labels['de'];
+
+        // load initial list view
+        showList();
+
+
+
+    });
+
+</script>
+
+
+<div id="mainContainer">
+    <div class="row">
+
+        <div id="message" style="display: none"></div>
+        <div class="col-sm-12">
+
+            <div id="view-country-search">
+
+            </div>
+
+            <div id="view-country-list">
+
+            </div>
+
+            <div id="view-country-form">
+
+            </div>
+
+            <div id="view-country-detail">
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<!-- Custom JavaScripts -->
+<script src="/data/datamock.js"></script>
+<script src="/data/textLabelsMock.js"></script>
+<script src="/controller/viewController.js"></script>
+<script src="/frameworks/bootstrap-3.3.6-dist/js/bootstrap.min.js"></script>
+
+</body>
+</html>
