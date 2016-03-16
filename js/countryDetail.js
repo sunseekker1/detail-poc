@@ -1,7 +1,6 @@
 
 var renderDetail = function (){
 
-    document.getElementById("txtCountryID").innerHTML = viewModel.country.countryID;
     document.getElementById("countryCode").innerHTML = viewModel.country.countryCode;
     document.getElementById("countryName").innerHTML = viewModel.country.countryName;
 

@@ -1,5 +1,8 @@
 
 var showForm = function (countryID, event) {
+    var msg = "";
+
+    hideDatasourceSelector();
 
     for (var i = 0; i < viewModel.countries.length; i++){
         if (viewModel.countries[i].countryID === countryID){
@@ -8,35 +11,55 @@ var showForm = function (countryID, event) {
         }
     }
 
-    event.preventDefault();
+    $("#view-template").load("/templates/countryForm.html", function (response, status, xhr) {
+        if (status == "error") {
+            msg = "Fehler: Die Datei 'countryForm.html' konnte nicht geladen werden.";
 
-    $("#view-country-list").empty();
-    $("#view-country-detail").empty();
+            showMessage(msg, "error");
+        }
+        $.getScript( "/js/countryForm.js").done( function (response, status, xhr) {
 
-    $("#view-country-form").load("/templates/countryForm.html", function () {
-        $.getScript( "/js/countryForm.js", function( data, textStatus, jqxhr ) {
             renderForm();
+
+        }).fail(function( jqxhr, settings, exception ) {
+
+            msg = "Fehler: Die Datei 'countryForm.js' konnte nicht geladen werden.";
+
+            showMessage(msg, "error");
+
         });
     });
 };
 
-var showList = function (){
+var showList = function (msg){
 
-    //event.preventDefault();
+    showDatasourceSelector();
 
-    $("#view-country-form").empty();
-    $("#view-country-detail").empty();
+    var msg = "";
 
-    $("#view-country-list").load("/templates/countryList.html", function () {
+    $("#view-template").load("/templates/countryList.html", function (response, status, xhr) {
+        if (status == "error") {
+            msg = "Fehler: Die Datei 'countryList.html' konnte nicht geladen werden.";
+
+            showMessage(msg, "error");
+        }
         $.getScript( "/js/countryList.js", function( data, textStatus, jqxhr ) {
             renderList();
         });
     });
 
+    if (typeof msg !== 'undefined' && msg !== null && msg.length){
+        showMessage(msg, "info");
+    }
+
+
 };
 
 
 var showDetail = function (countryID, event){
+    var msg = "";
+
+    hideDatasourceSelector();
 
     for (var i = 0; i < viewModel.countries.length; i++){
         if (viewModel.countries[i].countryID === countryID){
@@ -45,29 +68,131 @@ var showDetail = function (countryID, event){
         }
     }
 
-    event.preventDefault();
 
-    $( "#view-country-list").empty();
-    $( "#view-country-form").empty();
+    $("#view-template").load( "/templates/countryDetail.html", function (response, status, xhr) {
+        if (status == "error") {
+            msg = "Fehler: Die Datei 'countryDetail.html' konnte nicht geladen werden.";
 
-    $( "#view-country-detail" ).load( "/templates/countryDetail.html", function() {
+            showMessage(msg, "error");
+        }
         $.getScript( "/js/countryDetail.js", function( data, textStatus, jqxhr ) {
             renderDetail();
         });
     });
 };
 
-var confirmDelete = function (countryID) {
-    var doDelete = window.confirm("Möchten Sie das Land mit der ID " + countryID + " löschen?");
+var showDatasourceSelector = function (){
 
-    if (doDelete == true) {
+    $("#view-template-top").load("/templates/datasourceSelector.html", function (response, status, xhr) {
+        if (status == "error") {
+            msg = "Fehler: Die Datei 'datasourceSelector.html' konnte nicht geladen werden.";
 
-        alert("delete");
+            showMessage(msg, "error");
+        }
+    });
+
+    if (typeof msg !== 'undefined' && msg !== null && msg.length){
+        showMessage(msg, "info");
+    }
+
+};
+
+var hideDatasourceSelector = function (){
+    $("#view-template-top").empty();
+}
+
+var showMessage = function (msg, type){
+    var msgTypeClass = "alert-info";
+
+    if (type === "error"){
+        msgTypeClass = "alert-danger";
+    }
+
+    $("#message").removeClass("alert-info alert-danger").addClass(msgTypeClass);
+    $("#message").text(msg);
+    $("#message").show().delay(3000).fadeOut(1000);
+};
+
+/*var getCountries = function (datasource){
+    var countries = [];
+
+    if (datasource === "webserver"){
+        $.getJSON( "/data/countries.json", function(json) {
+            countries = json["countries"];
+        });
+    }
+    else if (datasource === "localstorage"){
+        countries = JSON.parse(localStorage.getItem("countries"));
+    }
+    return countries;
+};*/
+
+var setCountries = function (datasource, datatarget) {
+
+    var countries = [];
+
+    if (datasource === "webserver"){
+        $.getJSON( "/data/countries.json", function(json) {
+            
+                countries = json["countries"];
+
+            viewModel.countries = mapData(countries, "viewModel", "webserver");
+
+        });
+    }
+    else if (datasource === "localstorage"){
+        if (localStorage.getItem("countries") !== null){
+            countries = JSON.parse(localStorage.getItem("countries"));
+        }
+            viewModel.countries = mapData(countries, "viewModel", "localstorage");
     }
 };
 
-var saveForm = function (){
+var saveData = function () {
 
+    if (viewModel.datasource === "localstorage"){
 
-    alert("doSave");
+        localStorage.setItem("countries", JSON.stringify(mapData(viewModel.countries, viewModel.datatarget, "viewModel")));
+    }
+    else {
+        // to be implemented
+    }
 };
+
+var mapData = function (countries, datatarget, datasource) {
+
+    var mapedCountries = [];
+
+    if ((datatarget === "localstorage" || datatarget === "webserver") && datasource === "viewModel"){
+        // Map sourcecountries to requiered format
+        for (var i = 0; i < countries.length; i++) {
+            mapedCountries.push({
+                "id": countries[i]["ID"],
+                "country_name": countries[i]["countryName"],
+                "country_code": countries[i]["countryCode"]});
+        }
+    }
+    else if (datatarget === "viewModel" && (datasource === "localstorage" || datasource === "webserver")){
+        // Map sourcecountries to requiered format
+        for (var i = 0; i < countries.length; i++) {
+            mapedCountries.push({
+                "countryID": countries[i]["id"],
+                "countryName": countries[i]["country_name"],
+                "countryCode": countries[i]["country_code"]});
+        }
+    }
+
+    return mapedCountries;
+};
+
+var setLabels = function (lang){
+
+    $.getJSON( "/data/textLabels.json", function(json) {
+        viewModel.labels = json[lang];
+    });
+
+};
+
+
+
+

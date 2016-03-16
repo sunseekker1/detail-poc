@@ -1,0 +1,22 @@
+<script type="text/javascript">
+
+    $.getScript( "/js/datasourceSelector.js", function( data, textStatus, jqxhr ) {
+        toggleDatasourceSelector();
+    });
+
+</script>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">Wählen Sie Ihre Datenquelle</h3>
+    </div>
+    <div class="panel-body text-center">
+        <div class="btn-group" role="group" aria-label="...">
+            <button type="button" class="btn btn-default btn-datasource" id="btn-webserver">Webserver</button>
+            <button type="button" class="btn btn-default btn-datasource" id="btn-localstorage">LocalStorage</button>
+        </div>
+        <div class="btn-group" role="group" aria-label="...">
+            <button type="button" class="btn btn-warning btn-datasource" id="btn-write-localstorage">LocalStorage mit Webserver Daten füllen</button>
+        </div>
+    </div>
+</div>

@@ -15,6 +15,9 @@
 	  	"countryList": "Länderliste",
 	  	"countryDetail": "Land Detail",
 	  	"countryModify": "Land bearbeiten",
-	  	"searchBy": "Suchen nach"
+	  	"searchBy": "Suchen nach",
+	  	"editBtn": "Bearbeiten",
+	  	"listBtn": "Zurück zur Liste",
+	  	"saveBtn": "Speichern"
 	}
 }

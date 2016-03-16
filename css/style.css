@@ -14,9 +14,6 @@ a.selected {
 	color: #e3281f;
 }
 
-.form-inline .form-control.inline-form-control-with{
-    width: 300px;
-}
 
 td.buttonContainer, div.buttonContainer{
     text-align: right;
@@ -31,6 +28,13 @@ div.searchViewContainer{
     margin-top: 50px;
 }
 
+#info-space{
+    height: 60px;
+}
+
+#message{
+    display: none;
+}
 
 
 
